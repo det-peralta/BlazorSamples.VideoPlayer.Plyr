@@ -1,0 +1,25 @@
+﻿@page "/"
+
+@inject IJSRuntime JS
+
+<h1>Testing OnAfterRenderAsync</h1>
+
+<div class="container">
+    <video style="--plyr-color-main: #2BBCBB" id="player" controls playsinline>
+        <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+    </video>
+</div>
+
+@code {
+    private IJSObjectReference? modulecomponent = null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            string playerid = "#player";
+            modulecomponent = await JS.InvokeAsync<IJSObjectReference>("import", "./js/components/video.js");
+            await modulecomponent.InvokeVoidAsync("LoadCustomPlayer", playerid);
+        }
+    }
+}
